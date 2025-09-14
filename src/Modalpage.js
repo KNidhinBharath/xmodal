@@ -24,52 +24,58 @@ export default function Modalpage() {
   }
 
   function handleSubmit(e) {
-    e.preventDefault()
+  e.preventDefault()
 
-    // required fields
-    if (!formData.username.trim()) {
-      alert("Please fill out the Username field.")
-      return
-    }
-    if (!formData.email.trim()) {
-      alert("Invalid email. Please check your email address.")
-      return
-    }
-    if (!formData.phone.trim()) {
-      alert("Invalid phone number. Please enter a 10-digit phone number.")
-      return
-    }
-    if (!formData.dob.trim()) {
-      alert("Please fill out the Date of Birth field.")
-      return
-    }
-
-    // email check
-    if (!formData.email.includes("@")) {
-      alert("Invalid email. Please check your email address.")
-      return
-    }
-
-    // phone check
-    if (!/^\d{10}$/.test(formData.phone)) {
-      alert("Invalid phone number. Please enter a 10-digit phone number.")
-      return
-    }
-
-    // dob check
-    const entered = new Date(formData.dob)
-    const now = new Date()
-    entered.setHours(0, 0, 0, 0)
-    now.setHours(0, 0, 0, 0)
-    if (entered > now) {
-      alert("Invalid date of birth. Please enter a valid past date.")
-      return
-    }
-
-    // success: reset + close
-    setFormData({ username: "", email: "", phone: "", dob: "" })
-    setIsOpen(false)
+  // Step 1: Required-field checks
+  if (!formData.username.trim()) {
+    alert("Please fill out the Username field.")
+    return
   }
+  if (!formData.email.trim()) {
+    alert("Please fill out the Email field.")
+    return
+  }
+  if (!formData.phone.trim()) {
+    alert("Please fill out the Phone field.")
+    return
+  }
+  if (!formData.dob.trim()) {
+    alert("Please fill out the Date of Birth field.")
+    return
+  }
+
+  // Step 2: Email validation
+  if (!formData.email.includes("@")) {
+    alert("Invalid email. Please check your email address.")
+    return
+  }
+
+  // Step 3: Phone validation
+  if (!/^\d{10}$/.test(formData.phone)) {
+    alert("Invalid phone number. Please enter a 10-digit phone number.")
+    return
+  }
+
+  // Step 4: DOB validation
+  const entered = new Date(formData.dob)
+  const today = new Date()
+  entered.setHours(0, 0, 0, 0)
+  today.setHours(0, 0, 0, 0)
+
+  if (entered > today) {
+    alert("Invalid date of birth. Please enter a valid past date.")
+    return
+  }
+
+  // Success → reset + close
+  setFormData({
+    username: "",
+    email: "",
+    phone: "",
+    dob: ""
+  })
+  setIsOpen(false)
+}
 
   return (
     <div style={{ textAlign: "center" }}>
