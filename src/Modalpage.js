@@ -32,11 +32,11 @@ export default function Modalpage() {
       return
     }
     if (!formData.email.trim()) {
-      alert("Please fill out the Email field.")
+      alert("Invalid email. Please check your email address.")
       return
     }
     if (!formData.phone.trim()) {
-      alert("Please fill out the Phone field.")
+      alert("Invalid phone number. Please enter a 10-digit phone number.")
       return
     }
     if (!formData.dob.trim()) {
