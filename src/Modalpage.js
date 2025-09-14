@@ -1,130 +1,152 @@
 import { useState } from "react"
-import Modal from 'react-modal'
 
-Modal.setAppElement("#root");
+export default function Modalpage() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    phone: "",
+    dob: ""
+  })
 
-export default function Modalpage () {
+  const today = new Date().toISOString().split("T")[0]
 
-    const [isOpen ,setOpen] = useState(false)
-    const [formData ,setFormdata] = useState ({
+  function handleChange(e) {
+    const { id, value } = e.target
+    setFormData(prev => ({ ...prev, [id]: value }))
+  }
 
-        username : "",
-        email: "",
-        phone : "",
-        date : ""
-    })
+  function handleOverlayClick(e) {
+    // if clicked on outer modal div, close it
+    if (e.target.classList.contains("modal")) {
+      setIsOpen(false)
+    }
+  }
 
-    const today = new Date().toISOString().split("T")[0];
+  function handleSubmit(e) {
+    e.preventDefault()
 
-
-    function handleChange(e) {
-        setFormdata((prev) => ({...prev ,[e.target.name]:e.target.value }))
+    // required fields
+    if (!formData.username.trim()) {
+      alert("Please fill out the Username field.")
+      return
+    }
+    if (!formData.email.trim()) {
+      alert("Please fill out the Email field.")
+      return
+    }
+    if (!formData.phone.trim()) {
+      alert("Please fill out the Phone field.")
+      return
+    }
+    if (!formData.dob.trim()) {
+      alert("Please fill out the Date of Birth field.")
+      return
     }
 
-    function handleSubmit(e) {
-
-        if (!formData.username.trim()) {
-            alert("Please fill out the Username field.")
-            return
-        }
-
-        if (!formData.email.trim()) {
-            alert("Please fill out the Email field.")
-            return
-        }
-
-        if (!formData.phone.trim()) {
-            alert("Please fill out the Phone field.")
-            return
-        }
-
-        if (!formData.date.trim()) {
-            alert("Please fill out the Date of Birth field.")
-            return
-        }
-
-        // 2. Email validation
-        if (!formData.email.includes("@")) {
-            alert("Invalid email. Please check your email address.")
-            return
-        }
-
-        // 3. Phone validation: must be exactly 10 digits
-        if (!/^\d{10}$/.test(formData.phone)) {
-            alert("Invalid phone number. Please enter a 10-digit phone number.")
-            return
-        }
-
-        // 4. DOB validation: must not be a future date
-        const entered = new Date(formData.date)
-        const today = new Date()
-        entered.setHours(0, 0, 0, 0)
-        today.setHours(0, 0, 0, 0)
-
-        if (isNaN(entered.getTime()) || entered > today) {
-            alert("Invalid date of birth. Please enter a valid past date.")
-            return
-        }
-
-        // If all validations pass → reset form & close modal
-        alert("Form submitted successfully!")
-        setFormdata({
-            username: "",
-            email: "",
-            phone: "",
-            date: ""
-        })
-        setOpen(false)
-
+    // email check
+    if (!formData.email.includes("@")) {
+      alert("Invalid email. Please check your email address.")
+      return
     }
 
-    return (
-        <div className="modal" 
-            style={{
-                textAlign:"center"
-            }}>
+    // phone check
+    if (!/^\d{10}$/.test(formData.phone)) {
+      alert("Invalid phone number. Please enter a 10-digit phone number.")
+      return
+    }
 
-            <h1>User Details Modal</h1>
+    // dob check
+    const entered = new Date(formData.dob)
+    const now = new Date()
+    entered.setHours(0, 0, 0, 0)
+    now.setHours(0, 0, 0, 0)
+    if (entered > now) {
+      alert("Invalid date of birth. Please enter a valid past date.")
+      return
+    }
 
-            <button onClick={() => setOpen(true)}>Open Form</button>
+    // success: reset + close
+    setFormData({ username: "", email: "", phone: "", dob: "" })
+    setIsOpen(false)
+  }
 
-                    <Modal 
-                        isOpen = {isOpen}
-                        onRequestClose={() => setOpen(false)}
-                        contentLabel="FormModal"
-                        className="modal-content"
-                        overlayClassName="modal-overlay"
-                      
-                        >
-                            <form onSubmit={handleSubmit} 
-                                style={{
-                                    display:"flex",
-                                    flexDirection:"column",
-                                    width:"400px",
-                                    justifyContent:"center",
-                                    alignItems:"center"
-                                }}>
-                                    <h2>Fill details</h2>
+  return (
+    <div style={{ textAlign: "center" }}>
+      <h1>User Details Modal</h1>
 
-                                    <label htmlFor="username" >Username:</label>
-                                    <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} required></input>
+      <button onClick={() => setIsOpen(true)}>Open Form</button>
 
-                                    <label htmlFor="email">Email Address:</label>
-                                    <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required></input>
+      {isOpen && (
+        <div className="modal" onClick={handleOverlayClick} style={overlayStyle}>
+          <div className="modal-content" style={modalStyle}>
+            <form onSubmit={handleSubmit} style={formStyle}>
+              <h2>Fill details</h2>
 
-                                    <label htmlFor="phone">Phone Number:</label>
-                                    <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} required></input>
+              <label htmlFor="username">Username:</label>
+              <input
+                id="username"
+                type="text"
+                value={formData.username}
+                onChange={handleChange}
+              />
 
-                                    <label htmlFor="date">Date of Birth:</label>
-                                    <input type="date" id="date" name="date" max={today} value={formData.date} pattern="[0-9]{10}"  maxLength="10" onChange={handleChange} required></input>
+              <label htmlFor="email">Email Address:</label>
+              <input
+                id="email"
+                type="text"
+                value={formData.email}
+                onChange={handleChange}
+              />
 
-                                    <button type="submit"> Submit</button>
-                            </form>
+              <label htmlFor="phone">Phone Number:</label>
+              <input
+                id="phone"
+                type="text"
+                value={formData.phone}
+                onChange={handleChange}
+              />
 
-                    </Modal>
-       
+              <label htmlFor="dob">Date of Birth:</label>
+              <input
+                id="dob"
+                type="date"
+                max={today}
+                value={formData.dob}
+                onChange={handleChange}
+              />
 
+              <button type="submit" className="submit-button">
+                Submit
+              </button>
+            </form>
+          </div>
         </div>
+      )}
+    </div>
+  )
+}
 
-    )
+// Some basic inline styles for demo
+const overlayStyle = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  background: "rgba(0,0,0,0.5)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center"
+}
+const modalStyle = {
+  background: "#fff",
+  padding: "20px",
+  borderRadius: "8px",
+  width: "400px"
+}
+const formStyle = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "8px"
 }
