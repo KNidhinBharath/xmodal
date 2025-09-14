@@ -23,13 +23,58 @@ export default function Modalpage () {
 
     function handleSubmit(e) {
 
-        e.preventDefault()
-        setFormdata ({
-            username : "",
+        if (!formData.username.trim()) {
+            alert("Please fill out the Username field.")
+            return
+        }
+
+        if (!formData.email.trim()) {
+            alert("Please fill out the Email field.")
+            return
+        }
+
+        if (!formData.phone.trim()) {
+            alert("Please fill out the Phone field.")
+            return
+        }
+
+        if (!formData.date.trim()) {
+            alert("Please fill out the Date of Birth field.")
+            return
+        }
+
+        // 2. Email validation
+        if (!formData.email.includes("@")) {
+            alert("Invalid email. Please check your email address.")
+            return
+        }
+
+        // 3. Phone validation: must be exactly 10 digits
+        if (!/^\d{10}$/.test(formData.phone)) {
+            alert("Invalid phone number. Please enter a 10-digit phone number.")
+            return
+        }
+
+        // 4. DOB validation: must not be a future date
+        const entered = new Date(formData.date)
+        const today = new Date()
+        entered.setHours(0, 0, 0, 0)
+        today.setHours(0, 0, 0, 0)
+
+        if (isNaN(entered.getTime()) || entered > today) {
+            alert("Invalid date of birth. Please enter a valid past date.")
+            return
+        }
+
+        // If all validations pass → reset form & close modal
+        alert("Form submitted successfully!")
+        setFormdata({
+            username: "",
             email: "",
-            phone : "",
-            date : ""
+            phone: "",
+            date: ""
         })
+        setOpen(false)
 
     }
 
