@@ -26,15 +26,8 @@ export default function Modalpage() {
   function handleSubmit(e) {
   e.preventDefault()
 
-  // Step 1: Required-field checks
-  if (!formData.username.trim()) {
-    alert("Please fill out the Username field.")
-    return
-  }
-  if (!formData.email.trim()) {
-    alert("Please fill out the Email field.")
-    return
-  }
+   
+  
   if (!formData.phone.trim()) {
     alert("Please fill out the Phone field.")
     return
@@ -43,20 +36,19 @@ export default function Modalpage() {
     alert("Please fill out the Date of Birth field.")
     return
   }
-
-  // Step 2: Email validation
   if (!formData.email.includes("@")) {
-    alert("Invalid email. Please check your email address.")
-    return
+    e.target.setCustomValidity(`Please include an '@' in the email address. '${formData.email}' is missing an '@'.`) 
+    
   }
-
-  // Step 3: Phone validation
+  if(!formData.email.trim()) {
+    e.target.setCustomValidity("Invalid email. Please check your email address.")
+  }
   if (!/^\d{10}$/.test(formData.phone)) {
     alert("Invalid phone number. Please enter a 10-digit phone number.")
     return
   }
 
-  // Step 4: DOB validation
+ 
   const entered = new Date(formData.dob)
   const today = new Date()
   entered.setHours(0, 0, 0, 0)
@@ -95,6 +87,7 @@ export default function Modalpage() {
                 type="text"
                 value={formData.username}
                 onChange={handleChange}
+                required
               />
 
               <label htmlFor="email">Email Address:</label>
@@ -103,6 +96,8 @@ export default function Modalpage() {
                 type="text"
                 value={formData.email}
                 onChange={handleChange}
+                onInput={(e) => e.target.setCustomValidity("")}
+                
               />
 
               <label htmlFor="phone">Phone Number:</label>
